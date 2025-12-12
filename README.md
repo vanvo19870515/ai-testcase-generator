@@ -12,7 +12,7 @@ Công cụ tự động tạo test cases manual chuẩn sử dụng trí tuệ n
 - 🎨 **Rich CLI**: Giao diện terminal đẹp với Rich library
 - 🌐 **Web Interface**: Giao diện web đơn giản với Streamlit
 - ⚡ **One-click**: Chỉ cần 1 prompt feature, tự động tạo & xuất Excel
-- 📱 **GitHub Pages**: Demo trực tuyến tại https://vanvo19870515.github.io/ai-testcase-generator/
+- 📱 **GitHub Pages**: Demo giới thiệu tại https://vanvo19870515.github.io/ai-testcase-generator/
 
 ## 📋 Yêu cầu hệ thống
 
@@ -110,6 +110,41 @@ File Excel sẽ được tạo với format chuẩn bao gồm:
 - Functional: Login thành công
 - Negative: Sai email, sai password
 - Edge cases: Empty fields, special characters
+
+## 🌐 Demo Site
+
+**GitHub Pages Demo:** https://vanvo19870515.github.io/ai-testcase-generator/
+
+> **Lưu ý:** Đây là demo tĩnh giới thiệu về project. Ứng dụng tương tác đầy đủ yêu cầu chạy locally với server backend.
+
+### Chạy Full Application Locally
+
+Để sử dụng đầy đủ tính năng AI Test Case Generator:
+
+```bash
+# 1. Clone repository
+git clone https://github.com/vanvo19870515/ai-testcase-generator.git
+cd ai-testcase-generator
+
+# 2. Cài đặt dependencies
+pip install -r requirements.txt
+
+# 3. Thêm API key
+echo "OPENAI_API_KEY=your_openai_api_key_here" > .env
+# hoặc
+echo "ANTHROPIC_API_KEY=your_anthropic_api_key_here" > .env
+
+# 4. Chạy web application
+python run_webapp.py
+
+# 5. Mở browser
+# http://localhost:8000
+```
+
+**🎉 Bây giờ bạn có thể:**
+- Nhập feature prompt
+- Click 1 nút để generate test cases
+- Tự động tải file Excel chuẩn
 
 ## 📊 Cấu trúc Test Case
 
