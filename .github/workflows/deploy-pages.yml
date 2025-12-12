@@ -35,9 +35,8 @@ jobs:
     - name: Build static site
       run: |
         mkdir -p docs
-        cp README.md docs/index.md
-        # Tạo file HTML đơn giản cho demo
-        cat > docs/demo.html << 'EOF'
+        # Tạo file index.html chính
+        cat > docs/index.html << 'EOF'
         <!DOCTYPE html>
         <html lang="vi">
         <head>
@@ -116,6 +115,65 @@ jobs:
             <footer style="text-align: center; margin-top: 40px; color: #666;">
                 <p>🚀 Built with ❤️ using AI | © 2025 AI Test Case Generator</p>
             </footer>
+        </body>
+        </html>
+        EOF
+
+        # Tạo thêm file demo.html
+        cat > docs/demo.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="vi">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>AI Test Case Generator - Live Demo</title>
+            <style>
+                body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+                .header { text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; border-radius: 10px; margin-bottom: 30px; }
+                .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; }
+                .code { background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea; margin: 10px 0; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>🚧 Live Demo Coming Soon</h1>
+                <p>This is a static demo page. For full functionality, please run the application locally.</p>
+            </div>
+
+            <div class="warning">
+                <h3>⚠️ This is a Static Demo</h3>
+                <p>The interactive web application requires server-side processing and cannot run on GitHub Pages.</p>
+                <p>To use the full AI Test Case Generator:</p>
+            </div>
+
+            <div class="code">
+                <strong>1. Clone the repository:</strong><br>
+                <code>git clone https://github.com/vanvo19870515/ai-testcase-generator.git</code>
+            </div>
+
+            <div class="code">
+                <strong>2. Install dependencies:</strong><br>
+                <code>pip install -r requirements.txt</code>
+            </div>
+
+            <div class="code">
+                <strong>3. Add API key:</strong><br>
+                <code>echo "OPENAI_API_KEY=your_key" > .env</code>
+            </div>
+
+            <div class="code">
+                <strong>4. Run web app:</strong><br>
+                <code>python run_webapp.py</code>
+            </div>
+
+            <div class="code">
+                <strong>5. Open browser:</strong><br>
+                <code>http://localhost:8000</code>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="https://github.com/vanvo19870515/ai-testcase-generator" style="background: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">📂 View Full Code on GitHub</a>
+            </div>
         </body>
         </html>
         EOF
