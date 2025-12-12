@@ -7,14 +7,14 @@ class CursorAPI {
     constructor(apiKey, baseURL) {
         this.apiKey = apiKey;
         // Allow overriding endpoint via global (proxy) or constructor
-        this.baseURL = baseURL || window.CURSOR_PROXY_URL || 'https://api.cursor.com/v1/chat/completions';
+        this.baseURL = baseURL || window.CURSOR_PROXY_URL || 'https://api.openai.com/v1/chat/completions';
     }
 
     async generateTestCases(requirement, testTypes = ['functional', 'negative', 'edge_case']) {
         const prompt = this.buildPrompt(requirement, testTypes);
 
         const requestBody = {
-            model: "cursor-cloud-agent",
+            model: "gpt-4o-mini",
             messages: [
                 {
                     role: "system",
@@ -33,10 +33,9 @@ class CursorAPI {
             const headers = {
                 'Content-Type': 'application/json',
             };
-            // Only send auth headers when talking to Cursor API directly
+            // Only send auth headers when NOT using proxy
             if (!window.CURSOR_PROXY_URL && this.apiKey) {
                 headers['Authorization'] = `Bearer ${this.apiKey}`;
-                headers['X-API-Key'] = this.apiKey;
             }
 
             const response = await fetch(this.baseURL, {

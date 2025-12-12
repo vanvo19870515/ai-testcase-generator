@@ -2,7 +2,7 @@ export default {
   async fetch(request, env) {
     const cors = {
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization, X-API-Key",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
       "Access-Control-Allow-Methods": "POST, OPTIONS",
     };
 
@@ -15,7 +15,12 @@ export default {
     }
 
     // Upstream: allow override via env
-    const upstream = env.UPSTREAM_URL || "https://api.cursor.com/v1/chat/completions";
+    const upstream = env.UPSTREAM_URL || "https://api.openai.com/v1/chat/completions";
+    const apiKey = env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      return new Response("Missing OPENAI_API_KEY", { status: 500, headers: cors });
+    }
 
     try {
       const body = await request.json();
@@ -23,8 +28,7 @@ export default {
       const r = await fetch(upstream, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${env.CURSOR_API_KEY}`,
-          "X-API-Key": env.CURSOR_API_KEY,
+          "Authorization": `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
