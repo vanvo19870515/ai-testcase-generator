@@ -24,7 +24,7 @@ Công cụ tự động tạo test cases manual chuẩn sử dụng trí tuệ n
 
 1. **Clone repository:**
 ```bash
-git clone <repository-url>
+git clone https://github.com/vanvo19870515/ai-testcase-generator.git
 cd ai-testcase-generator
 ```
 
@@ -50,29 +50,40 @@ ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
 ## 📖 Cách sử dụng
 
-### 🚀 Cách 1: Web Interface (Khuyến nghị)
+### 🚀 Cách 1: Web App (Khuyến nghị - Hoàn chỉnh)
 
 ```bash
-# Chạy giao diện web
+# Chạy web app hoàn chỉnh với giao diện đẹp
+python run_webapp.py
+```
+
+Sau đó mở browser và truy cập: `http://localhost:8000`
+
+**Tính năng:**
+- ✅ **Textbox input**: Nhập feature prompt
+- ✅ **Auto generate**: Click 1 nút để tạo test cases
+- ✅ **Auto Excel export**: Tự động tải file Excel
+- ✅ **Beautiful UI**: Giao diện hiện đại, responsive
+- ✅ **Real-time feedback**: Loading states, error handling
+- ✅ **Examples**: Các ví dụ prompt mẫu
+
+### 💻 Cách 2: Web Interface (Streamlit)
+
+```bash
+# Chạy giao diện web đơn giản
 python run_web.py
 ```
 
 Sau đó mở browser và truy cập: `http://localhost:8501`
 
-**Ưu điểm:**
-- ✅ Giao diện trực quan, dễ sử dụng
-- ✅ Preview test cases trước khi tải xuống
-- ✅ Tải file Excel trực tiếp từ browser
-- ✅ Không cần cấu hình phức tạp
-
-### 💻 Cách 2: Command Line Interface
+### 🖥️ Cách 3: Command Line Interface
 
 ```bash
 # Chạy CLI version
 python src/main.py
 ```
 
-Sau đó nhập 1 prompt feature ngắn gọn (ví dụ: "đăng nhập với email/password") và AI sẽ tự động tạo test cases + xuất Excel.
+Nhập 1 prompt feature và AI tự động tạo test cases + xuất Excel.
 
 ### 📊 Output Format
 
