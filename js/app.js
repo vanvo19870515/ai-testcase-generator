@@ -5,16 +5,18 @@
 
 class AITestCaseGenerator {
     constructor() {
-        // Gemini API Key - WARNING: This is exposed in client-side code!
-        // For production, consider using a backend proxy
-        this.apiKey = 'AIzaSyD2aa3_DBE2OLD3vMIM4JlGZMjGuGELXZM';
+        // Cursor API Key - Try Cursor Cloud Agents API first, fallback to Gemini
+        this.cursorApiKey = 'key_2336441da39c92b6c530fc51bcf11557563fcb217a69c28236394020d5dc1412';
+        this.geminiApiKey = 'AIzaSyD2aa3_DBE2OLD3vMIM4JlGZMjGuGELXZM';
 
         this.input = document.getElementById('featurePrompt');
         this.sendBtn = document.getElementById('sendBtn');
         this.messagesContainer = document.getElementById('messagesContainer');
         this.charCount = document.getElementById('charCount');
 
-        this.geminiAPI = new GeminiAPI(this.apiKey);
+        // Try Cursor API first
+        this.api = new CursorAPI(this.cursorApiKey);
+        this.apiName = 'Cursor';
         this.currentDownloadId = null;
         this.isLoading = false;
 
@@ -66,8 +68,22 @@ class AITestCaseGenerator {
         this.showTypingIndicator();
 
         try {
-            // Generate test cases using Gemini
-            const testCases = await this.geminiAPI.generateTestCases(prompt);
+            // Try Cursor API first
+            let testCases;
+            try {
+                testCases = await this.api.generateTestCases(prompt);
+                console.log(`✅ ${this.apiName} API successful`);
+            } catch (cursorError) {
+                console.log(`❌ ${this.apiName} API failed:`, cursorError.message);
+
+                // Fallback to Gemini
+                this.api = new GeminiAPI(this.geminiApiKey);
+                this.apiName = 'Gemini';
+                this.addMessage('ai', '🔄 Chuyển sang Gemini API...', null, false);
+
+                testCases = await this.api.generateTestCases(prompt);
+                console.log('✅ Gemini API successful');
+            }
 
             // Remove typing indicator
             this.removeTypingIndicator();
@@ -77,7 +93,7 @@ class AITestCaseGenerator {
             if (testCases && testCases.length > 0) {
                 // Format response as markdown
                 const markdown = this.formatTestCasesAsMarkdown(testCases);
-                this.addMessage('ai', markdown, null, false);
+                this.addMessage('ai', `🤖 **${this.apiName} AI Response:**\n\n${markdown}`, null, false);
 
                 // Show download button
                 this.showDownloadButton(testCases);
@@ -129,13 +145,17 @@ class AITestCaseGenerator {
 
 Tôi có thể giúp bạn tự động tạo test cases chuẩn từ requirement của bạn.
 
+**AI Engines:**
+- 🔄 **Cursor Cloud Agents** (Primary) - AI coding assistant
+- 🤖 **Gemini 2.0 Flash** (Fallback) - Google AI
+
 **Cách sử dụng:**
 1. Nhập requirement vào ô bên dưới (ví dụ: "Đăng nhập với email và mật khẩu")
 2. Nhấn Enter hoặc click nút gửi
 3. AI sẽ tạo test cases và hiển thị kết quả
 4. Download file text để lưu lại
 
-**Lưu ý:** Đây là phiên bản GitHub Pages với Gemini API. Một số tính năng có thể bị hạn chế.
+**Lưu ý:** App sẽ tự động chọn AI engine tốt nhất. Nếu Cursor fail, sẽ chuyển sang Gemini.
         `;
 
         setTimeout(() => {

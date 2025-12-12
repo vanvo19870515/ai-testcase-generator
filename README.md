@@ -1,6 +1,6 @@
-# 🤖 AI Test Case Generator - Gemini Edition
+# 🤖 AI Test Case Generator - Cursor + Gemini Edition
 
-Công cụ tự động tạo test cases manual chuẩn sử dụng Google Gemini AI, chạy trực tiếp trên GitHub Pages!
+Công cụ tự động tạo test cases manual chuẩn sử dụng Cursor Cloud Agents & Google Gemini AI, chạy trực tiếp trên GitHub Pages!
 
 ## ✨ Tính năng
 

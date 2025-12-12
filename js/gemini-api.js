@@ -1,50 +1,56 @@
 /**
- * Gemini API Client for GitHub Pages
- * Client-side integration with Google Gemini API
+ * Cursor Cloud Agents API Client for GitHub Pages
+ * Client-side integration with Cursor Cloud Agents API
  */
 
-class GeminiAPI {
+class CursorAPI {
     constructor(apiKey) {
         this.apiKey = apiKey;
-        this.baseURL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+        // Try different possible Cursor API endpoints
+        this.baseURL = 'https://api.cursor.com/v1/chat/completions';
+        // Alternative: 'https://cursor.sh/api/v1/generate'
     }
 
     async generateTestCases(requirement, testTypes = ['functional', 'negative', 'edge_case']) {
         const prompt = this.buildPrompt(requirement, testTypes);
 
         const requestBody = {
-            contents: [{
-                parts: [{
-                    text: prompt
-                }]
-            }],
-            generationConfig: {
-                temperature: 0.7,
-                maxOutputTokens: 2048,
-                topP: 1,
-                topK: 32
-            }
+            model: "cursor-cloud-agent",
+            messages: [
+                {
+                    role: "system",
+                    content: "You are an expert QA engineer who creates comprehensive test cases. Always respond with valid JSON format for test cases."
+                },
+                {
+                    role: "user",
+                    content: prompt
+                }
+            ],
+            temperature: 0.7,
+            max_tokens: 2048
         };
 
         try {
-            const response = await fetch(`${this.baseURL}?key=${this.apiKey}`, {
+            const response = await fetch(this.baseURL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'X-API-Key': this.apiKey
                 },
                 body: JSON.stringify(requestBody)
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`API Error: ${errorData.error?.message || response.statusText}`);
+                const errorText = await response.text();
+                throw new Error(`Cursor API Error: ${response.status} ${response.statusText} - ${errorText}`);
             }
 
             const data = await response.json();
             return this.parseResponse(data);
 
         } catch (error) {
-            console.error('Gemini API Error:', error);
+            console.error('Cursor API Error:', error);
             throw error;
         }
     }
