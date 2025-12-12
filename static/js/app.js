@@ -1,32 +1,31 @@
 /**
- * AI Test Case Generator - JavaScript
- * Handle form submission và download functionality
+ * AI Test Case Generator - Chat Interface
+ * Handle chat-like interface with markdown display and Excel export
  */
 
 class AITestCaseGenerator {
     constructor() {
-        this.form = document.getElementById('generateForm');
-        this.resultsSection = document.getElementById('resultsSection');
-        this.loadingSpinner = document.getElementById('loadingSpinner');
-        this.resultsContent = document.getElementById('resultsContent');
-        this.successMessage = document.getElementById('successMessage');
-        this.resultMessage = document.getElementById('resultMessage');
-        this.downloadBtn = document.getElementById('downloadBtn');
-        this.fileInfo = document.getElementById('fileInfo');
+        this.input = document.getElementById('featurePrompt');
+        this.sendBtn = document.getElementById('sendBtn');
+        this.messagesContainer = document.getElementById('messagesContainer');
+        this.charCount = document.getElementById('charCount');
 
         this.currentDownloadId = null;
+        this.isLoading = false;
 
         this.init();
     }
 
     init() {
-        // Bind form submit
-        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        // Bind events
+        this.input.addEventListener('input', () => this.updateCharCount());
+        this.input.addEventListener('keydown', (e) => this.handleKeyDown(e));
+        this.sendBtn.addEventListener('click', () => this.sendMessage());
 
-        // Bind download button
-        this.downloadBtn.addEventListener('click', () => this.handleDownload());
+        // Initial char count
+        this.updateCharCount();
 
-        // Check API status on load
+        // Check API status
         this.checkAPIStatus();
     }
 
@@ -43,121 +42,211 @@ class AITestCaseGenerator {
         }
     }
 
-    async handleSubmit(e) {
-        e.preventDefault();
+    updateCharCount() {
+        const count = this.input.value.length;
+        this.charCount.textContent = `${count}/1000`;
 
-        const formData = new FormData(this.form);
-        const featurePrompt = formData.get('feature_prompt').trim();
+        // Enable/disable send button
+        this.sendBtn.disabled = count === 0 || this.isLoading;
+    }
 
-        if (!featurePrompt) {
-            this.showError('Feature prompt không được để trống!');
-            return;
+    handleKeyDown(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            this.sendMessage();
         }
+    }
 
-        // Get selected test types
-        const testTypes = formData.getAll('test_types');
-        if (testTypes.length === 0) {
-            this.showError('Vui lòng chọn ít nhất một loại test!');
-            return;
-        }
+    async sendMessage() {
+        const prompt = this.input.value.trim();
+        if (!prompt || this.isLoading) return;
 
-        // Show loading state
-        this.showLoading();
+        // Add user message
+        this.addMessage('user', prompt);
+
+        // Clear input
+        this.input.value = '';
+        this.updateCharCount();
+
+        // Show loading
+        this.isLoading = true;
+        this.showTypingIndicator();
 
         try {
-            // Prepare request data
-            const requestData = new FormData();
-            requestData.append('feature_prompt', featurePrompt);
-            testTypes.forEach(type => requestData.append('test_types', type));
-
             // Send request
             const response = await fetch('/generate', {
                 method: 'POST',
-                body: requestData
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'feature_prompt': prompt,
+                    'test_types': 'functional,negative,edge_case'
+                })
             });
 
             const result = await response.json();
 
+            // Remove typing indicator
+            this.removeTypingIndicator();
+            this.isLoading = false;
+
             if (result.success) {
-                this.showSuccess(result);
+                // Convert test cases to markdown
+                const markdown = this.formatTestCasesAsMarkdown(result.test_cases || []);
+                this.addMessage('ai', markdown, result.download_id);
             } else {
                 throw new Error(result.detail || 'Có lỗi xảy ra');
             }
 
         } catch (error) {
             console.error('Error:', error);
-            this.showError(error.message || 'Có lỗi xảy ra khi tạo test cases');
+            this.removeTypingIndicator();
+            this.isLoading = false;
+            this.addMessage('ai', `❌ Lỗi: ${error.message}`, null, true);
         }
     }
 
-    showLoading() {
-        this.resultsSection.style.display = 'block';
-        this.loadingSpinner.style.display = 'block';
-        this.resultsContent.style.display = 'none';
-        this.form.querySelector('button[type="submit"]').disabled = true;
-        this.form.querySelector('button[type="submit"]').innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">Đang tạo...</span>';
-    }
+    addMessage(type, content, downloadId = null, isError = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
 
-    showSuccess(result) {
-        this.loadingSpinner.style.display = 'none';
-        this.resultsContent.style.display = 'block';
+        const avatar = type === 'user' ? '👤' : '🤖';
+        const avatarClass = type === 'user' ? 'user' : 'ai';
 
-        // Update success message
-        this.resultMessage.textContent = result.message;
-
-        // Store download ID
-        this.currentDownloadId = result.download_id;
-
-        // Update file info
-        this.fileInfo.innerHTML = `
-            <h4>📁 Thông tin file</h4>
-            <p><strong>Số test cases:</strong> ${result.test_count}</p>
-            <p><strong>Tên file:</strong> ${result.excel_file}</p>
-            <p><strong>Trạng thái:</strong> <span style="color: #10b981;">Sẵn sàng tải xuống</span></p>
+        messageDiv.innerHTML = `
+            <div class="avatar ${avatarClass}">${avatar}</div>
+            <div class="content">
+                <div class="message-bubble ${isError ? 'error' : ''}">
+                    <div class="message-${type === 'ai' ? 'markdown' : 'text'}">
+                        ${type === 'ai' ? this.renderMarkdown(content) : this.escapeHtml(content)}
+                    </div>
+                    ${downloadId ? `
+                        <div class="message-actions">
+                            <button class="btn btn-success btn-sm" onclick="window.app.downloadExcel('${downloadId}')">
+                                📊 Download Excel
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
         `;
 
-        // Re-enable form
-        this.form.querySelector('button[type="submit"]').disabled = false;
-        this.form.querySelector('button[type="submit"]').innerHTML = '<span class="btn-icon">🚀</span><span class="btn-text">Tạo Test Cases</span>';
-
-        // Scroll to results
-        this.resultsSection.scrollIntoView({ behavior: 'smooth' });
+        this.messagesContainer.appendChild(messageDiv);
+        this.scrollToBottom();
     }
 
-    showError(message) {
-        this.loadingSpinner.style.display = 'none';
-        this.resultsContent.style.display = 'none';
-        this.resultsSection.style.display = 'block';
+    showTypingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.className = 'message ai typing-indicator';
+        indicator.id = 'typingIndicator';
+        indicator.innerHTML = `
+            <div class="avatar ai">🤖</div>
+            <div class="content">
+                <div class="message-bubble">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        `;
 
-        // Re-enable form
-        this.form.querySelector('button[type="submit"]').disabled = false;
-        this.form.querySelector('button[type="submit"]').innerHTML = '<span class="btn-icon">🚀</span><span class="btn-text">Tạo Test Cases</span>';
-
-        this.showNotification(message, 'error');
+        this.messagesContainer.appendChild(indicator);
+        this.scrollToBottom();
     }
 
-    async handleDownload() {
-        if (!this.currentDownloadId) {
-            this.showNotification('Không có file để tải xuống', 'error');
-            return;
+    removeTypingIndicator() {
+        const indicator = document.getElementById('typingIndicator');
+        if (indicator) {
+            indicator.remove();
+        }
+    }
+
+    formatTestCasesAsMarkdown(testCases) {
+        if (!testCases || testCases.length === 0) {
+            return "Không thể tạo test cases. Vui lòng thử lại.";
         }
 
-        try {
-            // Create download link
-            const downloadUrl = `/download/${this.currentDownloadId}`;
-            const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.download = 'test_cases.xlsx';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+        let markdown = `# Test Cases Generated\n\n`;
+        markdown += `**Tổng số:** ${testCases.length} test cases\n\n`;
 
-            this.showNotification('📥 Đang tải xuống file Excel...', 'success');
+        testCases.forEach((tc, index) => {
+            markdown += `## ${index + 1}. ${tc.test_case_name}\n\n`;
+            markdown += `**ID:** ${tc.test_case_id}\n`;
+            markdown += `**Priority:** ${tc.priority}\n`;
+            markdown += `**Type:** ${tc.test_type}\n\n`;
 
-        } catch (error) {
-            console.error('Download error:', error);
-            this.showNotification('Lỗi khi tải xuống file', 'error');
-        }
+            if (tc.preconditions) {
+                markdown += `**Preconditions:**\n${tc.preconditions}\n\n`;
+            }
+
+            markdown += `**Steps:**\n${tc.test_steps}\n\n`;
+
+            markdown += `**Expected Result:**\n${tc.expected_result}\n\n`;
+
+            if (tc.test_data) {
+                markdown += `**Test Data:**\n${tc.test_data}\n\n`;
+            }
+
+            markdown += `---\n\n`;
+        });
+
+        return markdown;
+    }
+
+    renderMarkdown(text) {
+        // Simple markdown renderer
+        return text
+            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+            .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+            .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+            .replace(/\*(.*)\*/gim, '<em>$1</em>')
+            .replace(/`([^`]+)`/gim, '<code>$1</code>')
+            .replace(/\n\n/gim, '</p><p>')
+            .replace(/\n/gim, '<br>')
+            .replace(/^/, '<p>')
+            .replace(/$/, '</p>');
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    scrollToBottom() {
+        setTimeout(() => {
+            this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+        }, 100);
+    }
+
+    downloadExcel(downloadId) {
+        const downloadUrl = `/download/${downloadId}`;
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = 'test_cases.xlsx';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        this.showNotification('📥 Đang tải xuống file Excel...', 'success');
+    }
+
+    checkAPIStatus() {
+        // Check API status on load (optional)
+        fetch('/status')
+            .then(response => response.json())
+            .then(status => {
+                if (!status.api_keys.openai && !status.api_keys.anthropic) {
+                    this.showNotification('⚠️ CẢNH BÁO: Không tìm thấy API key. Một số tính năng có thể không hoạt động.', 'warning');
+                }
+            })
+            .catch(error => {
+                console.error('Error checking API status:', error);
+            });
     }
 
     showNotification(message, type = 'info') {
@@ -241,31 +330,43 @@ class AITestCaseGenerator {
     }
 }
 
-// Global functions for HTML onclick
-function showExample(exampleId) {
-    // Hide all examples
-    const examples = document.querySelectorAll('.example-content');
-    examples.forEach(example => example.classList.remove('active'));
-
-    // Remove active class from all tabs
-    const tabs = document.querySelectorAll('.tab-btn');
-    tabs.forEach(tab => tab.classList.remove('active'));
-
-    // Show selected example
-    document.getElementById(exampleId + 'Example').classList.add('active');
-
-    // Add active class to clicked tab
-    event.target.classList.add('active');
-}
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    new AITestCaseGenerator();
-});
-
-// Add CSS animations
+// Add CSS for typing indicator and chat interface
 const style = document.createElement('style');
 style.textContent = `
+    .typing-dots {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+    }
+
+    .typing-dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #6b7280;
+        animation: typing 1.4s infinite;
+    }
+
+    .typing-dots span:nth-child(1) { animation-delay: 0s; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-10px); }
+    }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .message.error .message-bubble {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        color: #dc2626;
+    }
+
     @keyframes slideInRight {
         from { transform: translateX(100%); opacity: 0; }
         to { transform: translateX(0); opacity: 1; }
@@ -283,3 +384,8 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    window.app = new AITestCaseGenerator();
+});

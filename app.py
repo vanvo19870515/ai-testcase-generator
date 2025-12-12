@@ -57,7 +57,7 @@ async def generate_test_cases(
     feature_prompt: str = Form(..., description="Feature prompt để tạo test cases"),
     test_types: List[str] = Form(default=["functional", "negative", "edge_case"], description="Loại test cases cần tạo")
 ):
-    """API endpoint để generate test cases"""
+    """API endpoint để generate test cases và trả về markdown"""
 
     if not feature_prompt.strip():
         raise HTTPException(status_code=400, detail="Feature prompt không được để trống")
@@ -88,11 +88,11 @@ async def generate_test_cases(
             'feature': feature_prompt[:100] + "..." if len(feature_prompt) > 100 else feature_prompt
         }
 
+        # Format response for chat interface
         return {
             "success": True,
             "download_id": download_id,
-            "test_count": len(test_cases),
-            "excel_file": excel_file,
+            "test_cases": test_cases,  # Include full test cases for markdown formatting
             "message": f"Đã tạo thành công {len(test_cases)} test cases!"
         }
 

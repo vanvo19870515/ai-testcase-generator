@@ -20,167 +20,47 @@
                 <p class="subtitle">
                     Tự động tạo test cases manual chuẩn từ 1 prompt feature!
                 </p>
+                <div class="welcome-message">
+                    <p class="greeting">What requirement do you want to create testcase manual?</p>
+                </div>
             </div>
         </header>
 
         <!-- Main Content -->
         <main class="main">
-            <!-- Feature Input Form -->
-            <section class="form-section">
-                <div class="form-card">
-                    <h2 class="section-title">📝 Nhập Feature cần Test</h2>
+            <!-- Chat Interface -->
+            <section class="chat-section">
+                <div class="chat-container">
+                    <!-- Messages Container -->
+                    <div class="messages-container" id="messagesContainer">
+                        <!-- Messages will be added here dynamically -->
+                    </div>
 
-                    <form id="generateForm" class="generate-form">
-                        <!-- Feature Prompt -->
-                        <div class="form-group">
-                            <label for="featurePrompt" class="form-label">
-                                Feature Description <span class="required">*</span>
-                            </label>
+                    <!-- Input Area -->
+                    <div class="input-area">
+                        <div class="input-container">
                             <textarea
                                 id="featurePrompt"
-                                name="feature_prompt"
-                                class="form-textarea"
-                                placeholder="Ví dụ: Đăng nhập với email và mật khẩu&#10;- Kiểm tra validation email&#10;- Mật khẩu tối thiểu 8 ký tự&#10;- Hiển thị lỗi khi sai thông tin"
-                                rows="6"
-                                required
+                                class="chat-input"
+                                placeholder="Describe your requirement to generate test cases..."
+                                rows="1"
+                                maxlength="1000"
                             ></textarea>
-                            <div class="form-help">
-                                Mô tả feature cần tạo test cases. Có thể chi tiết hoặc ngắn gọn.
-                            </div>
-                        </div>
-
-                        <!-- Test Types -->
-                        <div class="form-group">
-                            <label class="form-label">📊 Loại Test Cases</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-label">
-                                    <input type="checkbox" name="test_types" value="functional" checked>
-                                    <span class="checkmark"></span>
-                                    Functional Tests
-                                </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" name="test_types" value="negative" checked>
-                                    <span class="checkmark"></span>
-                                    Negative Tests
-                                </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" name="test_types" value="edge_case" checked>
-                                    <span class="checkmark"></span>
-                                    Edge Cases
-                                </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" name="test_types" value="regression">
-                                    <span class="checkmark"></span>
-                                    Regression Tests
-                                </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" name="test_types" value="ui">
-                                    <span class="checkmark"></span>
-                                    UI Tests
-                                </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" name="test_types" value="api">
-                                    <span class="checkmark"></span>
-                                    API Tests
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary" id="generateBtn">
-                                <span class="btn-icon">🚀</span>
-                                <span class="btn-text">Tạo Test Cases</span>
+                            <button type="button" class="send-btn" id="sendBtn" disabled>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22,2 15,22 11,13 2,9"></polygon>
+                                </svg>
                             </button>
                         </div>
-                    </form>
-                </div>
-            </section>
-
-            <!-- Results Section -->
-            <section class="results-section" id="resultsSection" style="display: none;">
-                <div class="results-card">
-                    <h2 class="section-title">📊 Kết quả</h2>
-
-                    <div id="loadingSpinner" class="loading-spinner">
-                        <div class="spinner"></div>
-                        <p>🤖 Đang tạo test cases với AI...</p>
-                    </div>
-
-                    <div id="resultsContent" class="results-content" style="display: none;">
-                        <div class="success-message" id="successMessage">
-                            <div class="success-icon">✅</div>
-                            <h3>Hoàn thành!</h3>
-                            <p id="resultMessage"></p>
-                        </div>
-
-                        <div class="download-section">
-                            <button class="btn btn-success" id="downloadBtn">
-                                <span class="btn-icon">📥</span>
-                                <span class="btn-text">Tải file Excel</span>
-                            </button>
-                        </div>
-
-                        <div class="file-info" id="fileInfo">
-                            <!-- File info sẽ được cập nhật bởi JavaScript -->
+                        <div class="input-footer">
+                            <span class="char-count" id="charCount">0/1000</span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Examples Section -->
-            <section class="examples-section">
-                <div class="examples-card">
-                    <h2 class="section-title">💡 Ví dụ Prompt</h2>
 
-                    <div class="example-tabs">
-                        <button class="tab-btn active" onclick="showExample('login')">Đăng nhập</button>
-                        <button class="tab-btn" onclick="showExample('cart')">Giỏ hàng</button>
-                        <button class="tab-btn" onclick="showExample('search')">Tìm kiếm</button>
-                        <button class="tab-btn" onclick="showExample('payment')">Thanh toán</button>
-                    </div>
-
-                    <div id="loginExample" class="example-content active">
-                        <h3>Đăng nhập với email và mật khẩu</h3>
-                        <ul>
-                            <li>Kiểm tra validation email format</li>
-                            <li>Mật khẩu tối thiểu 8 ký tự</li>
-                            <li>Hiển thị lỗi khi sai thông tin</li>
-                            <li>Chức năng quên mật khẩu</li>
-                        </ul>
-                    </div>
-
-                    <div id="cartExample" class="example-content">
-                        <h3>Thêm sản phẩm vào giỏ hàng</h3>
-                        <ul>
-                            <li>Thêm sản phẩm có sẵn</li>
-                            <li>Thêm sản phẩm hết hàng</li>
-                            <li>Cập nhật số lượng</li>
-                            <li>Xóa sản phẩm khỏi giỏ</li>
-                        </ul>
-                    </div>
-
-                    <div id="searchExample" class="example-content">
-                        <h3>Chức năng tìm kiếm sản phẩm</h3>
-                        <ul>
-                            <li>Tìm kiếm với từ khóa hợp lệ</li>
-                            <li>Tìm kiếm không có kết quả</li>
-                            <li>Tìm kiếm với ký tự đặc biệt</li>
-                            <li>Autocomplete suggestions</li>
-                        </ul>
-                    </div>
-
-                    <div id="paymentExample" class="example-content">
-                        <h3>Thanh toán đơn hàng</h3>
-                        <ul>
-                            <li>Thanh toán thành công</li>
-                            <li>Thẻ tín dụng hết hạn</li>
-                            <li>Số dư không đủ</li>
-                            <li>Hủy thanh toán</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
         </main>
 
         <!-- Footer -->
