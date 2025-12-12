@@ -1,17 +1,18 @@
-# 🤖 AI Test Case Generator - Gemini Edition
+# 🤖 AI Test Case Generator
 
-Công cụ tự động tạo test cases manual chuẩn sử dụng Google Gemini AI, chạy trực tiếp trên GitHub Pages!
+Công cụ tự động tạo test cases manual chuẩn sử dụng trí tuệ nhân tạo (AI) và xuất ra file Excel.
 
 ## ✨ Tính năng
 
-- 🚀 **Gemini AI**: Sử dụng Google Gemini 2.0 Flash để tạo test cases
-- 📋 **Đa dạng loại test**: Functional, Negative, Edge Case
-- 📄 **Xuất Text**: Download test cases dưới dạng file text/markdown
+- 🚀 **AI-powered**: Sử dụng OpenAI GPT-4 hoặc Anthropic Claude để tạo test cases
+- 📋 **Đa dạng loại test**: Functional, Negative, Edge Case, Regression, UI, API
+- 📊 **Xuất Excel**: Tự động format và xuất test cases ra file Excel chuẩn
 - 🎯 **Test cases chuẩn**: Tuân thủ best practices của QA
 - 🌐 **Đa ngôn ngữ**: Hỗ trợ tiếng Việt và tiếng Anh
-- 💻 **Client-side**: Chạy hoàn toàn trên trình duyệt, không cần server
-- ⚡ **One-click**: Chỉ cần 1 prompt feature, AI tự động tạo test cases
-- 📱 **GitHub Pages**: Ứng dụng đầy đủ chức năng tại https://vanvo19870515.github.io/ai-testcase-generator/
+- 🎨 **Rich CLI**: Giao diện terminal đẹp với Rich library
+- 🌐 **Web Interface**: Giao diện web đơn giản với Streamlit
+- ⚡ **One-click**: Chỉ cần 1 prompt feature, tự động tạo & xuất Excel
+- 📱 **GitHub Pages**: Demo giới thiệu tại https://vanvo19870515.github.io/ai-testcase-generator/
 
 ## 📋 Yêu cầu hệ thống
 
@@ -49,44 +50,40 @@ ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
 ## 📖 Cách sử dụng
 
-### 🚀 Cách 1: GitHub Pages (Khuyến nghị - Hoàn chỉnh)
+### 🚀 Cách 1: Web App (Khuyến nghị - Hoàn chỉnh)
 
-**Truy cập trực tiếp:** https://vanvo19870515.github.io/ai-testcase-generator/
+```bash
+# Chạy web app hoàn chỉnh với giao diện đẹp
+python run_webapp.py
+```
+
+Sau đó mở browser và truy cập: `http://localhost:8000`
 
 **Tính năng:**
 - ✅ **Textbox input**: Nhập feature prompt
-- ✅ **Gemini AI**: Sử dụng Google Gemini 2.0 Flash
 - ✅ **Auto generate**: Click 1 nút để tạo test cases
-- ✅ **Download Text**: Tải file text/markdown
+- ✅ **Auto Excel export**: Tự động tải file Excel
 - ✅ **Beautiful UI**: Giao diện hiện đại, responsive
 - ✅ **Real-time feedback**: Loading states, error handling
-- ✅ **Client-side**: Chạy hoàn toàn trên trình duyệt
-- ✅ **No setup required**: Mở link là dùng được
+- ✅ **Examples**: Các ví dụ prompt mẫu
 
-### 💻 Cách 2: Chạy Local (Development)
+### 💻 Cách 2: Web Interface (Streamlit)
 
 ```bash
-# Clone repository
-git clone https://github.com/vanvo19870515/ai-testcase-generator.git
-cd ai-testcase-generator
-
-# Mở index.html trong browser
-# Hoặc serve với local server
-python -m http.server 8000
+# Chạy giao diện web đơn giản
+python run_web.py
 ```
 
-### 🖥️ Cách 3: Command Line (Cũ)
+Sau đó mở browser và truy cập: `http://localhost:8501`
+
+### 🖥️ Cách 3: Command Line Interface
 
 ```bash
-# Cài dependencies (nếu cần)
-pip install google-generativeai
+# Chạy CLI version
+python src/main.py
+```
 
-# Chạy CLI
-python -c "
-import google.generativeai as genai
-genai.configure(api_key='your-api-key')
-# ... code ...
-"
+Nhập 1 prompt feature và AI tự động tạo test cases + xuất Excel.
 
 ### 📊 Output Format
 
