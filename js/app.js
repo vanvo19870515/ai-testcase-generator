@@ -7,8 +7,8 @@ class AITestCaseGenerator {
     constructor() {
         // ==== CONFIG ====
         // If you have a proxy URL, set it here (recommended to avoid CORS & key exposure)
-        // Example: 'https://your-proxy.example.com/proxy/cursor'
-        window.CURSOR_PROXY_URL = 'https://your-proxy.example.com/proxy/cursor';
+        // Using Cloudflare Worker:
+        window.CURSOR_PROXY_URL = 'https://ai-testcase-generator.vothituongvan87.workers.dev/';
 
         // If calling Cursor API directly (not recommended on public web), put API key here
         this.cursorApiKey = '';
