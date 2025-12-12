@@ -1,0 +1,114 @@
+# Test Cases Generated for Requirement 3: Additional Features
+
+**Tổng số:** 5 test cases
+
+## 1. Verify "Remember Me" checkbox functionality
+**ID:** TC_ADDITIONAL_001
+**Scenario:** User logs in with "Remember Me" checked
+**Priority:** Low
+**Type:** Functional
+
+**Preconditions:**
+User has a valid account.
+
+**Steps:**
+1. Navigate to login page.
+2. Enter valid Email and Password.
+3. Check the "Ghi nhớ đăng nhập" checkbox.
+4. Click "Đăng nhập".
+5. Close the browser and reopen the application.
+
+**Expected Result:**
+User should remain logged in without needing to re-enter credentials.
+
+**Test Data:**
+Email: user@example.com, Password: Password123
+
+---
+
+## 2. Verify "Forgot Password" link navigation
+**ID:** TC_ADDITIONAL_002
+**Scenario:** User clicks "Forgot Password" link
+**Priority:** Medium
+**Type:** Functional
+
+**Preconditions:**
+User is on the login page.
+
+**Steps:**
+1. Navigate to login page.
+2. Click on "Quên mật khẩu" link.
+
+**Expected Result:**
+System redirects user to the Password Recovery page.
+
+**Test Data:**
+N/A
+
+---
+
+## 3. Verify "Register New Account" link navigation
+**ID:** TC_ADDITIONAL_003
+**Scenario:** User clicks "Register New Account" link
+**Priority:** High
+**Type:** Functional
+
+**Preconditions:**
+User is on the login page.
+
+**Steps:**
+1. Navigate to login page.
+2. Click on "Đăng ký tài khoản mới" link.
+
+**Expected Result:**
+System redirects user to the Registration page.
+
+**Test Data:**
+N/A
+
+---
+
+## 4. Verify "Remember Me" unchecked behavior
+**ID:** TC_ADDITIONAL_004
+**Scenario:** User logs in without "Remember Me" checked
+**Priority:** Low
+**Type:** Negative
+
+**Preconditions:**
+User has a valid account.
+
+**Steps:**
+1. Navigate to login page.
+2. Enter valid Email and Password.
+3. Ensure "Ghi nhớ đăng nhập" is UNCHECKED.
+4. Click "Đăng nhập".
+5. Close the browser and reopen the application.
+
+**Expected Result:**
+User should be logged out and asked to sign in again.
+
+**Test Data:**
+Email: user@example.com, Password: Password123
+
+---
+
+## 5. Verify Broken Links
+**ID:** TC_ADDITIONAL_005
+**Scenario:** Check if links are broken
+**Priority:** Low
+**Type:** Edge Case
+
+**Preconditions:**
+User is on the login page.
+
+**Steps:**
+1. Inspect "Quên mật khẩu" link.
+2. Inspect "Đăng ký tài khoản mới" link.
+
+**Expected Result:**
+Links should point to valid URLs (not 404).
+
+**Test Data:**
+N/A
+
+---
