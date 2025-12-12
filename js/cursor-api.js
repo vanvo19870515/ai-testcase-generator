@@ -93,13 +93,23 @@ QUY TẮC:
 
     parseResponse(data) {
         try {
-            const text = data.candidates[0]?.content?.parts[0]?.text;
-            if (!text) {
-                throw new Error('No response content from Gemini API');
+            // Try to extract JSON from the response
+            let content = '';
+            
+            // Handle OpenAI/Cursor format
+            if (data.choices && data.choices[0] && data.choices[0].message) {
+                content = data.choices[0].message.content;
+            } 
+            // Handle Gemini format (legacy)
+            else if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                content = data.candidates[0].content.parts[0].text;
             }
 
-            // Try to extract JSON from the response
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            if (!content) {
+                throw new Error('No response content from API');
+            }
+
+            const jsonMatch = content.match(/\{[\s\S]*\}/);
             if (!jsonMatch) {
                 throw new Error('No JSON found in response');
             }
@@ -127,4 +137,4 @@ QUY TẮC:
 }
 
 // Export for use in other files
-window.GeminiAPI = GeminiAPI;
+window.CursorAPI = CursorAPI;
