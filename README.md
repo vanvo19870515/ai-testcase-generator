@@ -179,12 +179,6 @@ Permission denied: test_cases.xlsx
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-## 🙋‍♂️ Liên hệ
-
-- **Author**: AI Test Case Generator Team
-- **Email**: contact@aitestcasegenerator.com
-- **GitHub**: [@ai-testcase-generator](https://github.com/ai-testcase-generator)
-
 ---
 
 **Happy Testing! 🧪✨**
