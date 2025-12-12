@@ -35,6 +35,8 @@ jobs:
     - name: Build static site
       run: |
         mkdir -p docs
+        # Prevent Jekyll processing
+        touch docs/.nojekyll
         # Tạo file index.html chính
         cat > docs/index.html << 'EOF'
         <!DOCTYPE html>
