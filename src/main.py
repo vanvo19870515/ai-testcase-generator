@@ -295,22 +295,22 @@ def main():
         excel_file = generator.export_to_excel(test_cases)
 
         # Summary with celebration
-        console.print("
-[bold green]🎉 HOÀN THÀNH! TEST CASES ĐÃ SẴN SÀNG:[/bold green]"        console.print(f"📋 Tổng số test cases: [bold]{len(test_cases)}[/bold]")
+        console.print("\n[bold green]🎉 HOÀN THÀNH! TEST CASES ĐÃ SẴN SÀNG:[/bold green]")
+        console.print(f"📋 Tổng số test cases: [bold]{len(test_cases)}[/bold]")
         console.print(f"🎯 Feature: [bold]{feature_prompt}[/bold]")
         console.print(f"📁 File Excel: [bold]{excel_file}[/bold]")
 
         # Show sample test case
         if test_cases:
-            console.print("
-[bold cyan]💡 VÍ DỤ TEST CASE:[/bold cyan]"            tc = test_cases[0]
+            console.print("\n[bold cyan]💡 VÍ DỤ TEST CASE:[/bold cyan]")
+            tc = test_cases[0]
             console.print(f"🆔 ID: [bold]{tc.test_case_id}[/bold]")
             console.print(f"📝 Tên: [bold]{tc.test_case_name}[/bold]")
             console.print(f"⭐ Ưu tiên: [bold]{tc.priority}[/bold]")
             console.print(f"🔧 Loại: [bold]{tc.test_type}[/bold]")
 
-        console.print("
-[dim]💡 Mẹo: Mở file Excel để xem đầy đủ test cases chi tiết![/dim]"    except Exception as e:
+        console.print("\n[dim]💡 Mẹo: Mở file Excel để xem đầy đủ test cases chi tiết![/dim]")
+    except Exception as e:
         console.print(f"[red]❌ Error: {e}[/red]")
         console.print("[yellow]💡 Kiểm tra: API key có đúng không? Kết nối internet ổn không?[/yellow]")
 
