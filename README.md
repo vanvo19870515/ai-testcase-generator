@@ -5,11 +5,14 @@ Công cụ tự động tạo test cases manual chuẩn sử dụng trí tuệ n
 ## ✨ Tính năng
 
 - 🚀 **AI-powered**: Sử dụng OpenAI GPT-4 hoặc Anthropic Claude để tạo test cases
-- 📋 **Đa dạng loại test**: Functional, Negative, Edge Case, Regression, v.v.
+- 📋 **Đa dạng loại test**: Functional, Negative, Edge Case, Regression, UI, API
 - 📊 **Xuất Excel**: Tự động format và xuất test cases ra file Excel chuẩn
 - 🎯 **Test cases chuẩn**: Tuân thủ best practices của QA
 - 🌐 **Đa ngôn ngữ**: Hỗ trợ tiếng Việt và tiếng Anh
-- 🎨 **Rich UI**: Giao diện terminal đẹp với Rich library
+- 🎨 **Rich CLI**: Giao diện terminal đẹp với Rich library
+- 🌐 **Web Interface**: Giao diện web đơn giản với Streamlit
+- ⚡ **One-click**: Chỉ cần 1 prompt feature, tự động tạo & xuất Excel
+- 📱 **GitHub Pages**: Demo trực tuyến tại https://vanvo19870515.github.io/ai-testcase-generator/
 
 ## 📋 Yêu cầu hệ thống
 
@@ -47,31 +50,55 @@ ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
 ## 📖 Cách sử dụng
 
-### Chạy cơ bản
+### 🚀 Cách 1: Web Interface (Khuyến nghị)
 
 ```bash
+# Chạy giao diện web
+python run_web.py
+```
+
+Sau đó mở browser và truy cập: `http://localhost:8501`
+
+**Ưu điểm:**
+- ✅ Giao diện trực quan, dễ sử dụng
+- ✅ Preview test cases trước khi tải xuống
+- ✅ Tải file Excel trực tiếp từ browser
+- ✅ Không cần cấu hình phức tạp
+
+### 💻 Cách 2: Command Line Interface
+
+```bash
+# Chạy CLI version
 python src/main.py
 ```
 
-Sau đó làm theo hướng dẫn trên màn hình:
-1. Nhập requirement của bạn
-2. Chọn AI provider (openai/anthropic)
-3. Chọn loại test cần tạo
+Sau đó nhập 1 prompt feature ngắn gọn (ví dụ: "đăng nhập với email/password") và AI sẽ tự động tạo test cases + xuất Excel.
 
-### Ví dụ requirement
+### 📊 Output Format
 
-```
-Tạo test cases cho tính năng đăng nhập của ứng dụng web:
-- Người dùng có thể đăng nhập với email và mật khẩu
-- Hệ thống kiểm tra email format
-- Mật khẩu phải có ít nhất 8 ký tự
-- Có chức năng "Quên mật khẩu"
-```
+File Excel sẽ được tạo với format chuẩn bao gồm:
 
-### Output
+| Trường | Mô tả |
+|--------|-------|
+| Test Case ID | Mã định danh duy nhất (TC_FUNCTIONAL_001) |
+| Test Scenario | Mô tả tình huống test |
+| Test Case Name | Tên test case ngắn gọn |
+| Test Steps | Các bước thực hiện (đánh số) |
+| Expected Result | Kết quả mong đợi |
+| Preconditions | Điều kiện tiên quyết |
+| Test Data | Dữ liệu test cần thiết |
+| Priority | Độ ưu tiên (High/Medium/Low) |
+| Test Type | Loại test (Functional/Negative/Edge Case) |
+| Status | Trạng thái test (Not Executed/Passed/Failed) |
 
-- File Excel sẽ được tạo tự động với format chuẩn
-- Mỗi test case có đầy đủ thông tin: ID, Scenario, Steps, Expected Result, v.v.
+### 🌟 Ví dụ nhanh
+
+**Input prompt:** `"Đăng nhập với email và mật khẩu"`
+
+**Output:** File Excel với 8-12 test cases bao gồm:
+- Functional: Login thành công
+- Negative: Sai email, sai password
+- Edge cases: Empty fields, special characters
 
 ## 📊 Cấu trúc Test Case
 

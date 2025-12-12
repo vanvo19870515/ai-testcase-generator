@@ -247,60 +247,72 @@ class AITestCaseGenerator:
         return filename
 
 def main():
-    """Main function"""
+    """Main function - Simplified version"""
     console.print("[bold blue]🤖 AI Test Case Generator[/bold blue]")
-    console.print("Tự động tạo test cases manual chuẩn sử dụng AI\n")
+    console.print("🚀 Chỉ cần nhập 1 prompt feature, tự động tạo test cases chuẩn & xuất Excel!\n")
 
-    # Get user input
-    requirement = console.input("[bold cyan]Nhập requirement của bạn:[/bold cyan]\n")
+    # Get simple feature prompt
+    feature_prompt = console.input("[bold cyan]📝 Nhập feature cần test (ví dụ: 'đăng nhập với email/password'):[/bold cyan]\n")
 
-    if not requirement.strip():
-        console.print("[red]Error: Requirement không được để trống![/red]")
+    if not feature_prompt.strip():
+        console.print("[red]❌ Error: Feature prompt không được để trống![/red]")
         return
 
-    # Select AI provider
-    ai_provider = console.input("[bold cyan]Chọn AI provider (openai/anthropic) [default: openai]:[/bold cyan] ").strip() or "openai"
+    # Auto-configure with defaults
+    ai_provider = os.getenv("DEFAULT_AI_PROVIDER", "openai")
+    default_test_types = os.getenv("DEFAULT_TEST_TYPES", "functional,negative,edge_case")
+    test_types = [t.strip() for t in default_test_types.split(",")]
 
-    # Select test types
-    test_types_input = console.input("[bold cyan]Chọn loại test (comma-separated) [default: functional,negative,edge_case]:[/bold cyan] ").strip()
-    if not test_types_input:
-        test_types = ["functional", "negative", "edge_case"]
-    else:
-        test_types = [t.strip() for t in test_types_input.split(",")]
+    console.print(f"[dim]🤖 Sử dụng AI: {ai_provider.upper()}[/dim]")
+    console.print(f"[dim]📊 Loại test: {', '.join(test_types)}[/dim]")
 
     try:
         # Initialize generator
-        generator = AITestCaseGenerator(ai_provider=ai_provider)
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            init_task = progress.add_task("🚀 Khởi tạo AI Generator...", total=1)
+
+            generator = AITestCaseGenerator(ai_provider=ai_provider)
+
+            progress.update(init_task, completed=1)
 
         # Generate test cases
-        console.print(f"\n[bold yellow]Đang tạo test cases cho {len(test_types)} loại test...[/bold yellow]")
-        test_cases = generator.generate_test_cases(requirement, test_types)
+        console.print(f"\n[bold yellow]🎯 Đang tạo test cases cho feature: '{feature_prompt}'[/bold yellow]")
+
+        test_cases = generator.generate_test_cases(feature_prompt, test_types)
 
         if not test_cases:
-            console.print("[red]Không thể tạo test cases. Vui lòng kiểm tra API key và thử lại.[/red]")
+            console.print("[red]❌ Không thể tạo test cases. Vui lòng kiểm tra API key và thử lại.[/red]")
             return
 
-        console.print(f"[green]✓ Đã tạo thành công {len(test_cases)} test cases![/green]")
+        console.print(f"[green]✅ Đã tạo thành công {len(test_cases)} test cases![/green]")
 
-        # Export to Excel
+        # Auto export to Excel
+        console.print("[bold yellow]📊 Đang xuất file Excel...[/bold yellow]")
         excel_file = generator.export_to_excel(test_cases)
 
-        # Summary
+        # Summary with celebration
         console.print("
-[bold green]TÓM TẮT:[/bold green]"        console.print(f"📋 Tổng số test cases: {len(test_cases)}")
-        console.print(f"📊 Phân loại: {', '.join(test_types)}")
-        console.print(f"📁 File Excel: {excel_file}")
+[bold green]🎉 HOÀN THÀNH! TEST CASES ĐÃ SẴN SÀNG:[/bold green]"        console.print(f"📋 Tổng số test cases: [bold]{len(test_cases)}[/bold]")
+        console.print(f"🎯 Feature: [bold]{feature_prompt}[/bold]")
+        console.print(f"📁 File Excel: [bold]{excel_file}[/bold]")
 
-        # Show sample
+        # Show sample test case
         if test_cases:
             console.print("
-[bold cyan]VÍ DỤ TEST CASE ĐẦU TIÊN:[/bold cyan]"            tc = test_cases[0]
-            console.print(f"ID: {tc.test_case_id}")
-            console.print(f"Tên: {tc.test_case_name}")
-            console.print(f"Ưu tiên: {tc.priority}")
+[bold cyan]💡 VÍ DỤ TEST CASE:[/bold cyan]"            tc = test_cases[0]
+            console.print(f"🆔 ID: [bold]{tc.test_case_id}[/bold]")
+            console.print(f"📝 Tên: [bold]{tc.test_case_name}[/bold]")
+            console.print(f"⭐ Ưu tiên: [bold]{tc.priority}[/bold]")
+            console.print(f"🔧 Loại: [bold]{tc.test_type}[/bold]")
 
-    except Exception as e:
-        console.print(f"[red]Error: {e}[/red]")
+        console.print("
+[dim]💡 Mẹo: Mở file Excel để xem đầy đủ test cases chi tiết![/dim]"    except Exception as e:
+        console.print(f"[red]❌ Error: {e}[/red]")
+        console.print("[yellow]💡 Kiểm tra: API key có đúng không? Kết nối internet ổn không?[/yellow]")
 
 if __name__ == "__main__":
     main()
