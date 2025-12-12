@@ -36,9 +36,10 @@ jobs:
         run: |
           mkdir -p docs
           touch docs/.nojekyll
-          cp pages/index.html docs/index.html
-          rm -rf docs/static
-          cp -R static docs/static
+          cp index.html docs/index.html
+          rm -rf docs/css docs/js
+          cp -R css docs/css
+          cp -R js docs/js
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
