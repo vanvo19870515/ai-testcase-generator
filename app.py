@@ -40,7 +40,8 @@ def get_generator():
     """Get or create AI generator instance"""
     global generator
     if generator is None:
-        ai_provider = os.getenv("DEFAULT_AI_PROVIDER", "openai")
+        # Force using openai to avoid anthropic httpx issues
+        ai_provider = "openai"
         generator = AITestCaseGenerator(ai_provider=ai_provider)
     return generator
 

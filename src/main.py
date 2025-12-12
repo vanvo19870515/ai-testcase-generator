@@ -12,8 +12,7 @@ from typing import List, Dict, Optional
 from dataclasses import dataclass, asdict
 from pathlib import Path
 
-import openai
-import anthropic
+import requests
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from dotenv import load_dotenv
@@ -47,19 +46,14 @@ class AITestCaseGenerator:
         self.client = self._initialize_client()
 
     def _initialize_client(self):
-        """Initialize AI client based on provider"""
+        """Initialize AI client - only OpenAI supported"""
         if self.ai_provider == "openai":
             api_key = os.getenv("OPENAI_API_KEY")
             if not api_key:
                 raise ValueError("OPENAI_API_KEY not found in environment variables")
-            return openai.OpenAI(api_key=api_key)
-        elif self.ai_provider == "anthropic":
-            api_key = os.getenv("ANTHROPIC_API_KEY")
-            if not api_key:
-                raise ValueError("ANTHROPIC_API_KEY not found in environment variables")
-            return anthropic.Anthropic(api_key=api_key)
+            return api_key
         else:
-            raise ValueError(f"Unsupported AI provider: {self.ai_provider}")
+            raise ValueError("Only OpenAI is supported")
 
     def generate_test_cases(self, requirement: str, test_types: List[str] = None) -> List[TestCase]:
         """
@@ -127,27 +121,26 @@ class AITestCaseGenerator:
         """Call AI API to generate test cases"""
         try:
             if self.ai_provider == "openai":
-                response = self.client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[
+                # Use requests directly to avoid httpx issues
+                url = "https://api.openai.com/v1/chat/completions"
+                headers = {
+                    "Authorization": f"Bearer {self.client}",
+                    "Content-Type": "application/json"
+                }
+                data = {
+                    "model": "gpt-4",
+                    "messages": [
                         {"role": "system", "content": "Bạn là chuyên gia QA tạo test cases chuẩn."},
                         {"role": "user", "content": prompt}
                     ],
-                    max_tokens=2000,
-                    temperature=0.7
-                )
-                return response.choices[0].message.content
+                    "max_tokens": 2000,
+                    "temperature": 0.7
+                }
+                response = requests.post(url, headers=headers, json=data)
+                response.raise_for_status()
+                result = response.json()
+                return result["choices"][0]["message"]["content"]
 
-            elif self.ai_provider == "anthropic":
-                response = self.client.messages.create(
-                    model="claude-3-sonnet-20240229",
-                    max_tokens=2000,
-                    system="Bạn là chuyên gia QA tạo test cases chuẩn.",
-                    messages=[
-                        {"role": "user", "content": prompt}
-                    ]
-                )
-                return response.content[0].text
 
         except Exception as e:
             console.print(f"[red]Error calling AI API: {e}[/red]")
