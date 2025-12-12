@@ -3,23 +3,30 @@ export default {
     const cors = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Methods": "POST, OPTIONS, GET",
     };
 
     // Preflight
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors });
     }
+
+    // Health check
+    if (request.method === "GET") {
+      return new Response("OK", { status: 200, headers: cors });
+    }
+
     if (request.method !== "POST") {
       return new Response("Method not allowed", { status: 405, headers: cors });
     }
 
     // Upstream: allow override via env
     const upstream = env.UPSTREAM_URL || "https://api.openai.com/v1/chat/completions";
-    const apiKey = env.OPENAI_API_KEY;
+    const apiKeyRaw = env.OPENAI_API_KEY || "";
+    const apiKey = apiKeyRaw.trim();
 
-    if (!apiKey) {
-      return new Response("Missing OPENAI_API_KEY", { status: 500, headers: cors });
+    if (!apiKey || apiKey.toLowerCase().startsWith("api key")) {
+      return new Response("Missing/invalid OPENAI_API_KEY (paste raw sk-... only)", { status: 500, headers: cors });
     }
 
     try {

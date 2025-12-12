@@ -16,6 +16,7 @@
   - Nếu gọi trực tiếp (không khuyến nghị), đặt key vào `this.cursorApiKey = ''`.
   - Worker dùng OpenAI endpoint mặc định: `https://api.openai.com/v1/chat/completions`
   - Đặt env `OPENAI_API_KEY` trong Worker; có thể override upstream qua `UPSTREAM_URL`.
+  - Lưu ý: dán nguyên key dạng `sk-...`, không kèm tiền tố "API key:" hay xuống dòng.
 
 ## 🚀 Sử dụng
 ### Cách 1: GitHub Pages
