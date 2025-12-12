@@ -73,16 +73,27 @@ class AITestCaseGenerator {
         this.showTypingIndicator();
 
         try {
+            // GitHub Pages is static: show guidance instead of calling backend
+            const isGitHubPages = window.location.hostname.endsWith('github.io');
+            if (isGitHubPages) {
+                this.removeTypingIndicator();
+                this.isLoading = false;
+                this.addMessage('ai', '⚠️ This is a static GitHub Pages demo. To generate test cases with AI + export Excel, run locally: `python run_webapp.py` and open `http://localhost:8000`.', null, false);
+                return;
+            }
+
             // Send request
             const response = await fetch('/generate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: new URLSearchParams({
-                    'feature_prompt': prompt,
-                    'test_types': 'functional,negative,edge_case'
-                })
+                body: (() => {
+                    const params = new URLSearchParams();
+                    params.append('feature_prompt', prompt);
+                    ['functional','negative','edge_case'].forEach(t => params.append('test_types', t));
+                    return params;
+                })()
             });
 
             const result = await response.json();

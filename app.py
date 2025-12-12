@@ -9,6 +9,7 @@ import uuid
 from pathlib import Path
 from typing import List, Optional
 from datetime import datetime
+from dataclasses import asdict
 
 import uvicorn
 from fastapi import FastAPI, Request, Form, HTTPException
@@ -92,7 +93,7 @@ async def generate_test_cases(
         return {
             "success": True,
             "download_id": download_id,
-            "test_cases": test_cases,  # Include full test cases for markdown formatting
+            "test_cases": [asdict(tc) for tc in test_cases],
             "message": f"Đã tạo thành công {len(test_cases)} test cases!"
         }
 
