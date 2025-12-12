@@ -10,7 +10,7 @@ class CursorAPI {
         this.baseURL = baseURL || window.CURSOR_PROXY_URL || 'https://api.cursor.com/v1/chat/completions';
     }
 
-    async generateTestCases(requirement, testTypes = ['functional', 'negative', 'edge_case']) {
+    async generateTestCases(requirement, testTypes = ['functional', 'negative', 'edge_case', 'security', 'performance']) {
         const prompt = this.buildPrompt(requirement, testTypes);
 
         const requestBody = {
@@ -95,7 +95,7 @@ QUY TẮC:
         try {
             const text = data.candidates[0]?.content?.parts[0]?.text;
             if (!text) {
-                throw new Error('No response content from Gemini API');
+                throw new Error('No response content from Cursor API');
             }
 
             // Try to extract JSON from the response
@@ -127,4 +127,4 @@ QUY TẮC:
 }
 
 // Export for use in other files
-window.GeminiAPI = GeminiAPI;
+window.CursorAPI = CursorAPI;
