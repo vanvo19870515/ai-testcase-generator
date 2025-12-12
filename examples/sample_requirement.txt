@@ -1,0 +1,32 @@
+TẠO TEST CASES CHO TÍNH NĂNG ĐĂNG NHẬP ỨNG DỤNG WEB
+
+Requirement chi tiết:
+
+1. Tính năng đăng nhập:
+   - Người dùng nhập email và mật khẩu
+   - Email phải có format hợp lệ (@domain.com)
+   - Mật khẩu tối thiểu 8 ký tự, có chữ hoa, chữ thường, số
+   - Button "Đăng nhập" chỉ enable khi form hợp lệ
+
+2. Validation rules:
+   - Email rỗng: Hiển thị lỗi "Email không được để trống"
+   - Email sai format: "Email không hợp lệ"
+   - Mật khẩu rỗng: "Mật khẩu không được để trống"
+   - Mật khẩu < 8 ký tự: "Mật khẩu phải có ít nhất 8 ký tự"
+   - Sai thông tin đăng nhập: "Email hoặc mật khẩu không đúng"
+
+3. Additional features:
+   - Checkbox "Ghi nhớ đăng nhập"
+   - Link "Quên mật khẩu"
+   - Link "Đăng ký tài khoản mới"
+
+4. Security requirements:
+   - Không hiển thị mật khẩu dạng plain text
+   - Giới hạn số lần đăng nhập sai (max 5 lần)
+   - Lock account tạm thời sau 3 lần sai liên tiếp
+
+5. UI/UX requirements:
+   - Loading spinner khi đang xử lý
+   - Error messages hiển thị rõ ràng, màu đỏ
+   - Success message khi đăng nhập thành công
+   - Responsive design cho mobile và desktop

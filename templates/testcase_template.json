@@ -1,0 +1,12 @@
+{
+  "test_case_id": "TC_FUNCTIONAL_001",
+  "test_scenario": "Người dùng đăng nhập thành công với thông tin hợp lệ",
+  "test_case_name": "Login with valid credentials",
+  "preconditions": "1. Ứng dụng web đã được mở\n2. Người dùng chưa đăng nhập\n3. Có tài khoản test hợp lệ",
+  "test_steps": "1. Truy cập trang đăng nhập\n2. Nhập email hợp lệ\n3. Nhập mật khẩu hợp lệ\n4. Click button 'Đăng nhập'",
+  "test_data": "Email: test@example.com\nPassword: TestPass123!",
+  "expected_result": "1. Đăng nhập thành công\n2. Chuyển hướng đến trang dashboard\n3. Hiển thị thông báo chào mừng\n4. Session được tạo và lưu trữ",
+  "priority": "High",
+  "test_type": "Functional",
+  "notes": "Test case chính cho tính năng core"
+}
