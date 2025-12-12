@@ -1,20 +1,19 @@
 /**
  * AI Test Case Generator - GitHub Pages Version
- * Client-side application with Gemini API integration
+ * Client-side application with Cursor API integration
  */
 
 class AITestCaseGenerator {
     constructor() {
-        // Cursor API Key - Try Cursor Cloud Agents API first, fallback to Gemini
+        // Cursor API Key (client-side). For production, move to proxy/serverless.
         this.cursorApiKey = 'key_2336441da39c92b6c530fc51bcf11557563fcb217a69c28236394020d5dc1412';
-        this.geminiApiKey = 'AIzaSyD2aa3_DBE2OLD3vMIM4JlGZMjGuGELXZM';
 
         this.input = document.getElementById('featurePrompt');
         this.sendBtn = document.getElementById('sendBtn');
         this.messagesContainer = document.getElementById('messagesContainer');
         this.charCount = document.getElementById('charCount');
 
-        // Try Cursor API first
+        // Cursor API client
         this.api = new CursorAPI(this.cursorApiKey);
         this.apiName = 'Cursor';
         this.currentDownloadId = null;
@@ -68,22 +67,9 @@ class AITestCaseGenerator {
         this.showTypingIndicator();
 
         try {
-            // Try Cursor API first
-            let testCases;
-            try {
-                testCases = await this.api.generateTestCases(prompt);
-                console.log(`✅ ${this.apiName} API successful`);
-            } catch (cursorError) {
-                console.log(`❌ ${this.apiName} API failed:`, cursorError.message);
-
-                // Fallback to Gemini
-                this.api = new GeminiAPI(this.geminiApiKey);
-                this.apiName = 'Gemini';
-                this.addMessage('ai', '🔄 Chuyển sang Gemini API...', null, false);
-
-                testCases = await this.api.generateTestCases(prompt);
-                console.log('✅ Gemini API successful');
-            }
+            // Call Cursor API
+            const testCases = await this.api.generateTestCases(prompt);
+            console.log(`✅ ${this.apiName} API successful`);
 
             // Remove typing indicator
             this.removeTypingIndicator();
@@ -145,9 +131,8 @@ class AITestCaseGenerator {
 
 Tôi có thể giúp bạn tự động tạo test cases chuẩn từ requirement của bạn.
 
-**AI Engines:**
-- 🔄 **Cursor Cloud Agents** (Primary) - AI coding assistant
-- 🤖 **Gemini 2.0 Flash** (Fallback) - Google AI
+**AI Engine:**
+- 🤖 **Cursor Cloud Agents**
 
 **Cách sử dụng:**
 1. Nhập requirement vào ô bên dưới (ví dụ: "Đăng nhập với email và mật khẩu")
@@ -155,7 +140,7 @@ Tôi có thể giúp bạn tự động tạo test cases chuẩn từ requiremen
 3. AI sẽ tạo test cases và hiển thị kết quả
 4. Download file text để lưu lại
 
-**Lưu ý:** App sẽ tự động chọn AI engine tốt nhất. Nếu Cursor fail, sẽ chuyển sang Gemini.
+**Lưu ý:** App đang gọi trực tiếp Cursor API từ trình duyệt. Nên dùng proxy để bảo mật key.
         `;
 
         setTimeout(() => {
