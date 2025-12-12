@@ -12,8 +12,9 @@
 ## ⚠️ Lưu ý về API key / Proxy
 - Nên dùng proxy/backend để giữ key an toàn, tránh CORS.
 - Cấu hình nhanh ở `js/app.js`:
-  - `window.CURSOR_PROXY_URL = 'https://your-proxy.example.com/proxy/cursor'`
+  - `window.CURSOR_PROXY_URL = 'https://ai-testcase-generator.vothituongvan87.workers.dev/'`
   - Nếu gọi trực tiếp (không khuyến nghị), đặt key vào `this.cursorApiKey = ''`.
+  - Nếu cần override upstream trong Worker: đặt env `UPSTREAM_URL` (mặc định `https://api.cursor.com/v1/chat/completions`).
 
 ## 🚀 Sử dụng
 ### Cách 1: GitHub Pages
