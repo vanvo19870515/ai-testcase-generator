@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: ai-testcase-generator
+    env: docker
+    plan: free
+    branch: main
+    healthCheckPath: /status
+    autoDeploy: true
+
