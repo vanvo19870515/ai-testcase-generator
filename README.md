@@ -1,260 +1,34 @@
-# 🤖 AI Test Case Generator - Cursor + Gemini Edition
+# 🤖 AI Test Case Generator - Cursor Edition
 
-Công cụ tự động tạo test cases manual chuẩn sử dụng Cursor Cloud Agents & Google Gemini AI, chạy trực tiếp trên GitHub Pages!
+Ứng dụng tạo test cases thủ công dùng **Cursor Cloud Agents**, chạy trực tiếp trên GitHub Pages (client-side, không backend).
 
 ## ✨ Tính năng
+- 🚀 **Cursor AI**: Sinh test cases từ prompt
+- 📋 **Loại test**: Functional, Negative, Edge Case
+- 📄 **Download**: Xuất ra file text/markdown
+- 🌐 **Chạy trên browser**: Mở link là dùng, không cần server
+- 💡 **UI đơn giản**: Nhập prompt → nhận test cases
 
-- 🚀 **Gemini AI**: Sử dụng Google Gemini 2.0 Flash để tạo test cases
-- 📋 **Đa dạng loại test**: Functional, Negative, Edge Case
-- 📄 **Xuất Text**: Download test cases dưới dạng file text/markdown
-- 🎯 **Test cases chuẩn**: Tuân thủ best practices của QA
-- 🌐 **Đa ngôn ngữ**: Hỗ trợ tiếng Việt và tiếng Anh
-- 💻 **Client-side**: Chạy hoàn toàn trên trình duyệt, không cần server
-- ⚡ **One-click**: Chỉ cần 1 prompt feature, AI tự động tạo test cases
-- 📱 **GitHub Pages**: Ứng dụng đầy đủ chức năng tại https://vanvo19870515.github.io/ai-testcase-generator/
+## ⚠️ Lưu ý về API key
+- Hiện code đang hardcode Cursor API key trong frontend (không an toàn).  
+- Khuyến nghị: dùng proxy/backend để giữ key an toàn, hoặc yêu cầu user tự nhập key trên UI.
 
-## 📋 Yêu cầu hệ thống
+## 🚀 Sử dụng
+### Cách 1: GitHub Pages
+- Truy cập: https://vanvo19870515.github.io/ai-testcase-generator/
+- Nhập requirement (ví dụ: “Đăng nhập với email và mật khẩu”) và bấm gửi.
 
-- Python 3.8+
-- OpenAI API key hoặc Anthropic API key
-- pip để cài đặt dependencies
-
-## 🚀 Cài đặt
-
-1. **Clone repository:**
+### Cách 2: Chạy local (dev)
 ```bash
 git clone https://github.com/vanvo19870515/ai-testcase-generator.git
 cd ai-testcase-generator
+python -m http.server 8000  # hoặc mở trực tiếp index.html
 ```
 
-2. **Tạo virtual environment:**
-```bash
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-```
+## 🛠️ Tùy chỉnh
+- Đổi API key trong `js/app.js` (nhưng đừng commit key thật).  
+- Nếu muốn bảo mật: tạo proxy server/worker, đặt key vào biến môi trường, rồi trỏ frontend gọi proxy.
 
-3. **Cài đặt dependencies:**
-```bash
-pip install -r requirements.txt
-```
-
-4. **Cấu hình API key:**
-
-Tạo file `.env` trong thư mục gốc:
-```env
-# Chọn một trong hai
-OPENAI_API_KEY=your_openai_api_key_here
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
-```
-
-## 📖 Cách sử dụng
-
-### 🚀 Cách 1: GitHub Pages (Khuyến nghị - Hoàn chỉnh)
-
-**Truy cập trực tiếp:** https://vanvo19870515.github.io/ai-testcase-generator/
-
-**Tính năng:**
-- ✅ **Textbox input**: Nhập feature prompt
-- ✅ **Gemini AI**: Sử dụng Google Gemini 2.0 Flash
-- ✅ **Auto generate**: Click 1 nút để tạo test cases
-- ✅ **Download Text**: Tải file text/markdown
-- ✅ **Beautiful UI**: Giao diện hiện đại, responsive
-- ✅ **Real-time feedback**: Loading states, error handling
-- ✅ **Client-side**: Chạy hoàn toàn trên trình duyệt
-- ✅ **No setup required**: Mở link là dùng được
-
-### 💻 Cách 2: Chạy Local (Development)
-
-```bash
-# Clone repository
-git clone https://github.com/vanvo19870515/ai-testcase-generator.git
-cd ai-testcase-generator
-
-# Mở index.html trong browser
-# Hoặc serve với local server
-python -m http.server 8000
-```
-
-### 🖥️ Cách 3: Command Line (Cũ)
-
-```bash
-# Cài dependencies (nếu cần)
-pip install google-generativeai
-
-# Chạy CLI
-python -c "
-import google.generativeai as genai
-genai.configure(api_key='your-api-key')
-# ... code ...
-"
-
-### 📊 Output Format
-
-File Excel sẽ được tạo với format chuẩn bao gồm:
-
-| Trường | Mô tả |
-|--------|-------|
-| Test Case ID | Mã định danh duy nhất (TC_FUNCTIONAL_001) |
-| Test Scenario | Mô tả tình huống test |
-| Test Case Name | Tên test case ngắn gọn |
-| Test Steps | Các bước thực hiện (đánh số) |
-| Expected Result | Kết quả mong đợi |
-| Preconditions | Điều kiện tiên quyết |
-| Test Data | Dữ liệu test cần thiết |
-| Priority | Độ ưu tiên (High/Medium/Low) |
-| Test Type | Loại test (Functional/Negative/Edge Case) |
-| Status | Trạng thái test (Not Executed/Passed/Failed) |
-
-### 🌟 Ví dụ nhanh
-
-**Input prompt:** `"Đăng nhập với email và mật khẩu"`
-
-**Output:** File Excel với 8-12 test cases bao gồm:
-- Functional: Login thành công
-- Negative: Sai email, sai password
-- Edge cases: Empty fields, special characters
-
-## 🌐 Demo Site
-
-**GitHub Pages Demo:** https://vanvo19870515.github.io/ai-testcase-generator/
-
-> **Lưu ý:** Đây là demo tĩnh giới thiệu về project. Ứng dụng tương tác đầy đủ yêu cầu chạy locally với server backend.
-
-### Chạy Full Application Locally
-
-Để sử dụng đầy đủ tính năng AI Test Case Generator:
-
-```bash
-# 1. Clone repository
-git clone https://github.com/vanvo19870515/ai-testcase-generator.git
-cd ai-testcase-generator
-
-# 2. Cài đặt dependencies
-pip install -r requirements.txt
-
-# 3. Thêm API key
-echo "OPENAI_API_KEY=your_openai_api_key_here" > .env
-# hoặc
-echo "ANTHROPIC_API_KEY=your_anthropic_api_key_here" > .env
-
-# 4. Chạy web application
-python run_webapp.py
-
-# 5. Mở browser
-# http://localhost:8000
-```
-
-**🎉 Bây giờ bạn có thể:**
-- Nhập feature prompt
-- Click 1 nút để generate test cases
-- Tự động tải file Excel chuẩn
-
-## 📊 Cấu trúc Test Case
-
-Mỗi test case được tạo sẽ bao gồm:
-
-| Trường | Mô tả |
-|--------|-------|
-| Test Case ID | Mã định danh duy nhất (TC_FUNCTIONAL_001) |
-| Test Scenario | Mô tả tình huống test |
-| Test Case Name | Tên test case ngắn gọn |
-| Test Steps | Các bước thực hiện (đánh số) |
-| Expected Result | Kết quả mong đợi |
-| Preconditions | Điều kiện tiên quyết |
-| Test Data | Dữ liệu test cần thiết |
-| Priority | Độ ưu tiên (High/Medium/Low) |
-| Test Type | Loại test (Functional/Negative/Edge Case) |
-
-## 🔧 Cấu hình nâng cao
-
-### Thay đổi AI model
-
-Trong code `src/main.py`, bạn có thể thay đổi model:
-
-```python
-# OpenAI
-response = self.client.chat.completions.create(
-    model="gpt-4",  # hoặc "gpt-3.5-turbo"
-    ...
-)
-
-# Anthropic
-response = self.client.messages.create(
-    model="claude-3-sonnet-20240229",  # hoặc model khác
-    ...
-)
-```
-
-### Tùy chỉnh prompt
-
-Sửa function `_create_prompt()` để thay đổi cách AI tạo test cases.
-
-## 📁 Cấu trúc dự án
-
-```
-ai-testcase-generator/
-├── src/
-│   └── main.py              # Script chính
-├── templates/               # Templates cho test cases
-├── examples/                # Ví dụ input/output
-├── docs/                    # Documentation
-├── requirements.txt         # Dependencies
-├── .env.example            # Template cho .env
-├── .gitignore              # Git ignore rules
-└── README.md               # File này
-```
-
-## 🎯 Best Practices
-
-### Viết requirement tốt
-
-- **Cụ thể**: Mô tả rõ ràng tính năng cần test
-- **Hoàn chỉnh**: Bao gồm tất cả edge cases
-- **Rõ ràng**: Tránh dùng từ mơ hồ
-- **Ngắn gọn**: Không quá dài dòng
-
-### Ví dụ requirement tốt
-
-❌ **Tốt**: "Test login feature with valid and invalid credentials"
-
-✅ **Tốt hơn**: "Test login feature where users can:
-- Login with valid email/password
-- See error for invalid email format
-- See error for wrong password
-- Access password reset functionality"
-
-## 🔍 Troubleshooting
-
-### Lỗi API key
-```
-Error: OPENAI_API_KEY not found in environment variables
-```
-**Giải pháp**: Tạo file `.env` và thêm API key
-
-### Lỗi JSON parsing
-```
-Error parsing AI response: ...
-```
-**Giải pháp**: AI response không đúng format JSON. Thử lại hoặc kiểm tra API key
-
-### File Excel không tạo được
-```
-Permission denied: test_cases.xlsx
-```
-**Giải pháp**: Đóng file Excel nếu đang mở, hoặc đổi tên file output
-
-## 🤝 Đóng góp
-
-1. Fork repository
-2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Tạo Pull Request
-
-## 📝 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
----
-
-**Happy Testing! 🧪✨**
+## 📌 Ghi chú
+- Không còn dùng Gemini/OpenAI/Anthropic; chỉ Cursor API.
+- Không có xuất Excel; chỉ tải text/markdown.
