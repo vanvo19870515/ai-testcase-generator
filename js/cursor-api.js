@@ -4,11 +4,10 @@
  */
 
 class CursorAPI {
-    constructor(apiKey) {
+    constructor(apiKey, baseURL) {
         this.apiKey = apiKey;
-        // Try different possible Cursor API endpoints
-        this.baseURL = 'https://api.cursor.com/v1/chat/completions';
-        // Alternative: 'https://cursor.sh/api/v1/generate'
+        // Allow overriding endpoint via global (proxy) or constructor
+        this.baseURL = baseURL || window.CURSOR_PROXY_URL || 'https://api.cursor.com/v1/chat/completions';
     }
 
     async generateTestCases(requirement, testTypes = ['functional', 'negative', 'edge_case']) {
@@ -31,13 +30,18 @@ class CursorAPI {
         };
 
         try {
+            const headers = {
+                'Content-Type': 'application/json',
+            };
+            // Only send auth headers when talking to Cursor API directly
+            if (!window.CURSOR_PROXY_URL && this.apiKey) {
+                headers['Authorization'] = `Bearer ${this.apiKey}`;
+                headers['X-API-Key'] = this.apiKey;
+            }
+
             const response = await fetch(this.baseURL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`,
-                    'X-API-Key': this.apiKey
-                },
+                headers,
                 body: JSON.stringify(requestBody)
             });
 

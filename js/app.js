@@ -5,16 +5,21 @@
 
 class AITestCaseGenerator {
     constructor() {
-        // Cursor API Key (client-side). For production, move to proxy/serverless.
-        this.cursorApiKey = 'key_2336441da39c92b6c530fc51bcf11557563fcb217a69c28236394020d5dc1412';
+        // ==== CONFIG ====
+        // If you have a proxy URL, set it here (recommended to avoid CORS & key exposure)
+        // Example: 'https://your-proxy.example.com/proxy/cursor'
+        window.CURSOR_PROXY_URL = 'https://your-proxy.example.com/proxy/cursor';
+
+        // If calling Cursor API directly (not recommended on public web), put API key here
+        this.cursorApiKey = '';
 
         this.input = document.getElementById('featurePrompt');
         this.sendBtn = document.getElementById('sendBtn');
         this.messagesContainer = document.getElementById('messagesContainer');
         this.charCount = document.getElementById('charCount');
 
-        // Cursor API client
-        this.api = new CursorAPI(this.cursorApiKey);
+        // Cursor API client (will use proxy URL if set above)
+        this.api = new CursorAPI(this.cursorApiKey, window.CURSOR_PROXY_URL);
         this.apiName = 'Cursor';
         this.currentDownloadId = null;
         this.isLoading = false;

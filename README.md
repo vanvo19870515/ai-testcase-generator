@@ -9,9 +9,11 @@
 - 🌐 **Chạy trên browser**: Mở link là dùng, không cần server
 - 💡 **UI đơn giản**: Nhập prompt → nhận test cases
 
-## ⚠️ Lưu ý về API key
-- Hiện code đang hardcode Cursor API key trong frontend (không an toàn).  
-- Khuyến nghị: dùng proxy/backend để giữ key an toàn, hoặc yêu cầu user tự nhập key trên UI.
+## ⚠️ Lưu ý về API key / Proxy
+- Nên dùng proxy/backend để giữ key an toàn, tránh CORS.
+- Cấu hình nhanh ở `js/app.js`:
+  - `window.CURSOR_PROXY_URL = 'https://your-proxy.example.com/proxy/cursor'`
+  - Nếu gọi trực tiếp (không khuyến nghị), đặt key vào `this.cursorApiKey = ''`.
 
 ## 🚀 Sử dụng
 ### Cách 1: GitHub Pages
@@ -26,8 +28,9 @@ python -m http.server 8000  # hoặc mở trực tiếp index.html
 ```
 
 ## 🛠️ Tùy chỉnh
-- Đổi API key trong `js/app.js` (nhưng đừng commit key thật).  
-- Nếu muốn bảo mật: tạo proxy server/worker, đặt key vào biến môi trường, rồi trỏ frontend gọi proxy.
+- Đổi proxy URL trong `js/app.js` (khuyến nghị).  
+- Nếu phải gọi trực tiếp: điền API key (nhưng không an toàn, tránh commit).  
+- Muốn bảo mật: tạo proxy server/worker, đặt key vào env, frontend chỉ gọi proxy.
 
 ## 📌 Ghi chú
 - Không còn dùng Gemini/OpenAI/Anthropic; chỉ Cursor API.
